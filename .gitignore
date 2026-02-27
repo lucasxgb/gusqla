@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambientes Virtuais
+venv/
+.venv/
+env/
+.env
+
+# Arquivos de IDEs/Editores
+.vscode/
+.idea/
+.spyderproject
+.ipynb_checkpoints
+
+# Dependências
+node_modules/
+
+# Arquivos de configuração/segurança
+.env
+.local
+*.log
+*.code-workspace
