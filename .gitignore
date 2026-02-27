@@ -23,3 +23,5 @@ node_modules/
 .local
 *.log
 *.code-workspace
+db_session.py
+/sqla03/conf/db_session.py
