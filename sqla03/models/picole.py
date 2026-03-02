@@ -1,8 +1,9 @@
 import sqlalchemy as sa
 from datetime import datetime
-from model_base import ModelBase
+from models.model_base import ModelBase
 
-from models.tipo_embalegem import TipoEmbalagem
+
+from models.tipo_embalagem import TipoEmbalagem
 from models.tipo_picole import TipoPicole
 from models.sabor import Sabor
 from models.aditivo_nutritivo import AditivoNutritivo
@@ -14,14 +15,14 @@ from typing import List, Optional
 
 
 
-from sqlalchemy.orm import orm
+import sqlalchemy.orm as orm
 
 # Picole pode ter varios aditivos nutritivos
 aditivos_nutritivos_picole = sa.Table(
     'aditivos_nutritivos_picole', 
     ModelBase.metadata,
-    sa.column("id_picole", sa.BigInteger, sa.ForeignKey("picoles.id")),
-    sa.column("id_aditivo_nutritivo", sa.BigInteger, sa.ForeignKey("aditivos_nutritivos.id")),
+    sa.Column("id_picole", sa.BigInteger, sa.ForeignKey("picoles.id")),
+    sa.Column("id_aditivo_nutritivo", sa.BigInteger, sa.ForeignKey("aditivos_nutritivos.id")),
     
 )
 
@@ -30,8 +31,8 @@ aditivos_nutritivos_picole = sa.Table(
 ingredientes_picole = sa.Table(
     'ingredientes_picole', 
     ModelBase.metadata,
-    sa.column("id_picole", sa.BigInteger, sa.ForeignKey("picoles.id")),
-    sa.column("id_ingrediente", sa.BigInteger, sa.ForeignKey("ingredientes.id")),
+    sa.Column("id_picole", sa.BigInteger, sa.ForeignKey("picoles.id")),
+    sa.Column("id_ingrediente", sa.BigInteger, sa.ForeignKey("ingredientes.id")),
     
 )
 
@@ -39,8 +40,8 @@ ingredientes_picole = sa.Table(
 conservantes_picole = sa.Table(
     'conservantes_picole', 
     ModelBase.metadata,
-    sa.column("id_picole", sa.BigInteger, sa.ForeignKey("picoles.id")),
-    sa.column("id_conservante", sa.BigInteger, sa.ForeignKey("conservantes.id")),
+    sa.Column("id_picole", sa.BigInteger, sa.ForeignKey("picoles.id")),
+    sa.Column("id_conservante", sa.BigInteger, sa.ForeignKey("conservantes.id")),
     
 )
 
@@ -48,25 +49,23 @@ conservantes_picole = sa.Table(
 
 class Picole(ModelBase):
     __tablename__ = 'picoles' 
+    __allow_unmapped__ = True
     
     id: int = sa.Column(sa.BigInteger, primary_key=True, autoincrement= True)
-    data_criacao: datetime = sa.column(sa.DateTime, default=datetime.now, index = True)
+    data_criacao: datetime = sa.Column(sa.DateTime, default=datetime.now, index = True)
     preco: float = sa.Column(sa.DECIMAL(8,2), nullable=False)
    
     
     id_sabor = sa.Column(sa.BigInteger, sa.ForeignKey('sabores.id'))
-    sabor: Sabor = orm.relationshio("Sabor", lazy="joined")
+    sabor: Sabor = orm.relationship("Sabor", lazy="joined")
     
     id_tipo_embalagem = sa.Column(sa.BigInteger, sa.ForeignKey('tipos_embalagem.id'))
-    id_tipo_embalagem: TipoEmbalagem = orm.relationshio("TipoEmbalagem", lazy="joined")
-    
-    id_tipo_embalagem = sa.Column(sa.BigInteger, sa.ForeignKey('tipos_embalagem.id'))
-    id_tipo_embalagem: TipoEmbalagem = orm.relationshio("TipoEmbalagem", lazy="joined")
+    tipo_embalagem: TipoEmbalagem = orm.relationship("TipoEmbalagem", lazy="joined")
     
     id_tipo_picole = sa.Column(sa.BigInteger, sa.ForeignKey('tipos_picole.id'))
-    id_tipo_picole: TipoPicole = orm.relationshio("TipoPicole", lazy="joined")
+    tipo_picole: TipoPicole = orm.relationship("TipoPicole", lazy="joined")
     
-    # Um picole pode ter variso ingredientes 
+    # Um picole pode ter varios ingredientes 
     ingredientes: List[Ingrediente] = orm.relationship("Ingrediente", secondary=ingredientes_picole, backref='ingrediente', lazy='joined') 
     
       # Um picole pode ter varios conservantes ou nenhum
